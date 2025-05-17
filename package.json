@@ -16,8 +16,7 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^7.6.0",
     "react-scripts": "^5.0.1",
-    "web-vitals": "^2.1.0",
-    "homepage": "https://Githubhyunseung-yun7.github.io/ex10/"
+    "web-vitals": "^2.1.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -44,5 +43,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "homepage": "https://Githubhyunseung-yun7.github.io/ex10/"
 }
