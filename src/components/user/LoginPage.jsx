@@ -4,7 +4,7 @@ import { Row, Col, Card, Form, Button } from 'react-bootstrap'
 const LoginPage = () => {
   const basename = process.env.PUBLIC_URL;
   const [form, setForm] = React.useState({
-    email: 'blue@inha.ac.kr',
+    email: 'blue@inha.com',
     pass: '12341234'
   });
   const { email, pass } = form;

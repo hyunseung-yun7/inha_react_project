@@ -3,7 +3,7 @@ import { Button, Card, Col, Form, Row } from 'react-bootstrap'
 
 const JoinPage = () => {
     const [form, setForm] = useState({
-        email: 'green@inha.ac.kr',
+        email: 'green@inha.com',
         pass: '12341234',
     });
     const { email, pass } = form;
