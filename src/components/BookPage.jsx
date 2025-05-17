@@ -1,6 +1,5 @@
-import { useState, Row, Col } from 'react';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+import { useState } from 'react';
+import { Row, Col, Button, Modal } from 'react-bootstrap';
 
 const BookPage = ({book}) => {
     const [show, setShow] = useState(false);
