@@ -2,6 +2,7 @@ import React from 'react'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { Row, Col, Card, Form, InputGroup, Button } from 'react-bootstrap'
+import BookPage from './BookPage';
 
 const Homepage = () => {
   const apiKey=process.env.REACT_APP_API_KEY;
@@ -38,6 +39,7 @@ const Homepage = () => {
     if (query===''){
       alert("검색어를 입력하세요");
     } else {
+      setPage(1);
       callAPI();
     }
   }
@@ -62,10 +64,11 @@ const Homepage = () => {
           <Col lg={2} md={3} xs={6}>
             <Card>
               <Card.Body>
-                  <img src={doc.thumbnail} width="100%"/>
+                 <BookPage book={doc}/>
                 </Card.Body>
               <Card.Footer>
                 <div className='text-truncate'>{doc.title}</div>
+                <div>{doc.sale_price}원</div>
               </Card.Footer>
             </Card>
           </Col>
@@ -75,7 +78,7 @@ const Homepage = () => {
         <Button 
           disabled={page===1}
           onClick={()=>setPage(page-1)}>이전</Button>
-        <span>{page}</span>
+        <span className='mx-2'>{page}</span>
         <Button 
           disabled={page===lastPage}
           onClick={()=>setPage(page+1)}>다음</Button>
