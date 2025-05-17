@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { Row, Col, Card, Form, InputGroup, Button } from 'react-bootstrap'
 
 const Homepage = () => {
+  const apiKey=process.env.REACT_APP_API_KEY;
   const [documents, setDocuments] = useState([]);
   const [query, setQuery] = useState("리액트");
   const [page, setPage] = useState(1);
@@ -27,6 +28,8 @@ const Homepage = () => {
   }
 
   useEffect(() => {
+    const titleElement = document.getElementsByTagName('title')[0];
+    titleElement.innerText = "홈페이지";
     callAPI();
   }, [page]);
 
