@@ -1,9 +1,17 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { Row, Col, Card, Form, Button } from 'react-bootstrap'
+import { app } from '../../firebase';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { useNavigate, Link } from 'react-router-dom';
+
 
 const LoginPage = () => {
+  const auth = getAuth(app);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
   const basename = process.env.PUBLIC_URL;
-  const [form, setForm] = React.useState({
+  const [form, setForm] = useState({
     email: 'blue@inha.com',
     pass: '12341234'
   });
@@ -16,15 +24,31 @@ const LoginPage = () => {
   };
 
   const onSubmit = (e) => {
+    // Submit 이벤트가 발생하면 새로고침을 방지
+    // e.preventDefault()를 사용하여 기본 동작을 막을 수 있습니다.
     e.preventDefault();
     //유효성체크
     if(email ==='' || pass ===''){
       alert('이메일과 비밀번호를 입력해주세요.');
     }else{
       //로그인체크
+      setLoading(true);
+      signInWithEmailAndPassword(auth, email, pass)
+      .then(success => {
+        alert('로그인 성공');
+        sessionStorage.setItem('email', email);
+        sessionStorage.setItem('uid', success.user.uid);
+        setLoading(false);
+        navigate('/');
+      })
+      .catch(error => {
+        alert('로그인 실패');
+        setLoading(false);
+      });
     }
   };
 
+  if(loading) return <h1 className='my-5 text-center'>로딩중...</h1>
   return (
     <div>
       <Row className='my-5 justify-content-center'>
@@ -34,7 +58,7 @@ const LoginPage = () => {
               <h5>로그인</h5>
             </Card.Header>
             <Card.Body>
-              <Form>
+              <Form onSubmit={onSubmit}>
                 <Form.Control
                   placeholder="email" className='mb-2'
                   value={email}
@@ -45,10 +69,10 @@ const LoginPage = () => {
                   value={pass}
                   name='pass'
                   onChange={onChange} />
-                <Button className="w-100">로그인</Button>
+                <Button className="w-100" type="submit">로그인</Button>
               </Form>
-              <div>
-                <a href={`${basename}/join`}>회원가입</a>
+              <div className='text-center mt-3'>
+                <Link to="/join">회원가입</Link>
               </div>
             </Card.Body>
           </Card>

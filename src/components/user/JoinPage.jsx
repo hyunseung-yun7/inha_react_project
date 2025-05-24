@@ -1,7 +1,14 @@
 import React, { useState } from 'react'
 import { Button, Card, Col, Form, Row } from 'react-bootstrap'
+import { app } from '../../firebase';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 
 const JoinPage = () => {
+    const auth = getAuth(app);
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+
     const [form, setForm] = useState({
         email: 'green@inha.com',
         pass: '12341234',
@@ -20,8 +27,21 @@ const JoinPage = () => {
             alert('이메일과 비밀번호를 입력해주세요.');
         }else{
             //회원가입체크
+            if(window.confirm('회원가입 하시겠습니까?')){
+                setLoading(true);
+                createUserWithEmailAndPassword(auth, email, pass)
+                .then(success => {
+                    alert('회원가입 성공');
+                    navigate('/login');
+                })
+                .cath(error =>{
+                    setLoading(false);
+                    alert('회원가입 실패' + error.mesage);
+                })
+            }
         }
     };
+    if(loading) return <h1 className='my-5 text-center'>로딩중...</h1>
     return (
         <div>
             <Row className='my-5 justify-content-center'>
@@ -48,4 +68,4 @@ const JoinPage = () => {
     )
 }
 
-export default JoinPage
+export default JoinPage;

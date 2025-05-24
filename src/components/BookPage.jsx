@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState } from 'react';
 import { Row, Col, Button, Modal } from 'react-bootstrap';
 
@@ -8,8 +9,9 @@ const BookPage = ({book}) => {
 
   return (
     <>
-        <img src={book.thumbnail || 'https://placehold.co/100x150'}
-            width='100%'
+        <img src={book.thumbnail || 'http://via.placeholder.com/120x174'} 
+            width={120} 
+            height={174}
             onClick={handleShow}
             style={{'cursor':'pointer'}}/>
         <Modal
