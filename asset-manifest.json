@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/inha_react_project/static/css/main.aecc3afd.css",
-    "main.js": "/inha_react_project/static/js/main.aa785d84.js",
-    "static/js/453.055872cb.chunk.js": "/inha_react_project/static/js/453.055872cb.chunk.js",
-    "index.html": "/inha_react_project/index.html",
-    "main.aecc3afd.css.map": "/inha_react_project/static/css/main.aecc3afd.css.map",
-    "main.aa785d84.js.map": "/inha_react_project/static/js/main.aa785d84.js.map",
-    "453.055872cb.chunk.js.map": "/inha_react_project/static/js/453.055872cb.chunk.js.map"
+    "main.css": "/ex10/static/css/main.0d6acde6.css",
+    "main.js": "/ex10/static/js/main.8f1a14cc.js",
+    "static/js/453.055872cb.chunk.js": "/ex10/static/js/453.055872cb.chunk.js",
+    "index.html": "/ex10/index.html",
+    "main.0d6acde6.css.map": "/ex10/static/css/main.0d6acde6.css.map",
+    "main.8f1a14cc.js.map": "/ex10/static/js/main.8f1a14cc.js.map",
+    "453.055872cb.chunk.js.map": "/ex10/static/js/453.055872cb.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.aecc3afd.css",
-    "static/js/main.aa785d84.js"
+    "static/css/main.0d6acde6.css",
+    "static/js/main.8f1a14cc.js"
   ]
 }
