@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import { Row, Col, Card, Form, Button } from 'react-bootstrap'
 import { app } from '../../firebase';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
@@ -28,27 +28,33 @@ const LoginPage = () => {
     // e.preventDefault()를 사용하여 기본 동작을 막을 수 있습니다.
     e.preventDefault();
     //유효성체크
-    if(email ==='' || pass ===''){
+    if (email === '' || pass === '') {
       alert('이메일과 비밀번호를 입력해주세요.');
-    }else{
+    } else {
       //로그인체크
       setLoading(true);
       signInWithEmailAndPassword(auth, email, pass)
-      .then(success => {
-        alert('로그인 성공');
-        sessionStorage.setItem('email', email);
-        sessionStorage.setItem('uid', success.user.uid);
-        setLoading(false);
-        navigate('/');
-      })
-      .catch(error => {
-        alert('로그인 실패');
-        setLoading(false);
-      });
+        .then(success => {
+          alert('로그인 성공');
+          sessionStorage.setItem('email', email);
+          sessionStorage.setItem('uid', success.user.uid);
+          setLoading(false);
+
+          if (sessionStorage.getItem('target')) {
+            navigate(sessionStorage.getItem('target'));
+            sessionStorage.removeItem('target');
+          } else {
+            navigate('/');
+          }
+        })
+        .catch(error => {
+          alert('로그인 실패');
+          setLoading(false);
+        });
     }
   };
 
-  if(loading) return <h1 className='my-5 text-center'>로딩중...</h1>
+  if (loading) return <h1 className='my-5 text-center'>로딩중...</h1>
   return (
     <div>
       <Row className='my-5 justify-content-center'>

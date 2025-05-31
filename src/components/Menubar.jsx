@@ -20,8 +20,10 @@ const Menubar = () => {
         const uid = sessionStorage.getItem('uid');
         if (uid) {
             setEmail(sessionStorage.getItem('email'));
+        } else {
+            setEmail('');
         }
-    }, []);
+    }, [location.pathname]);
 
     const onClickLogout = () => {
         signOut(auth).then(() => {
@@ -43,12 +45,15 @@ const Menubar = () => {
                             style={{ maxHeight: '100px' }}
                             navbarScroll>
                             <Nav.Link as={Link} to="/" active={pathname==='/' && true}>Home</Nav.Link>
-                            <Nav.Link as={Link} to="/cart"
-                                active={pathname==='/cart' && true}>장바구니</Nav.Link>
+                            {email && <Nav.Link as={Link} to="/cart" active={pathname==='/cart' && true}>장바구니</Nav.Link>}
+                            <Nav.Link as={Link} to="/post" active={pathname.startsWith('/post') && true}>게시판</Nav.Link>
                         </Nav>
                         <Nav>
                             {email ? (
-                                <Nav.Link disabled>{email}</Nav.Link>
+                                <>
+                                    <Nav.Link disabled>{email}</Nav.Link>
+                                    <Nav.Link onClick={onClickLogout} style={{cursor: 'pointer'}}>로그아웃</Nav.Link>
+                                </>
                             ) : (
                                 <Nav.Link as={Link} to="/login"
                                     active={pathname==='/login' && true}>로그인</Nav.Link>
