@@ -7,7 +7,7 @@ const PostRouter = () => {
   return (
       <Routes>
         <Route path="/" element={<ListPage />} />
-        <Route path="/post" element={<ListPage />} />
+        {/* <Route path="/post" element={<ListPage />} /> */}
         <Route path="/write" element={<WritePage />} />
       </Routes>
   )

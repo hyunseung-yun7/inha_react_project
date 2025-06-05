@@ -1,6 +1,7 @@
-import React from 'react';
 import { useState } from 'react';
-import { Row, Col, Button, Modal } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
+import Button from 'react-bootstrap/Button'
+import Modal from 'react-bootstrap/Modal';
 
 const BookPage = ({book}) => {
     const [show, setShow] = useState(false);
@@ -9,11 +10,8 @@ const BookPage = ({book}) => {
 
   return (
     <>
-        <img src={book.thumbnail || 'http://via.placeholder.com/120x174'} 
-            width={120} 
-            height={174}
-            onClick={handleShow}
-            style={{'cursor':'pointer'}}/>
+        <img style={{'cursor':'pointer'}}
+          src={book.thumbnail || 'https://placehold.co/100x150'} width='100%' onClick={handleShow}/>
         <Modal
         size="lg"
         show={show}
@@ -26,7 +24,7 @@ const BookPage = ({book}) => {
         <Modal.Body>
           <Row>
             <Col xs={3}>
-                <img src={book.thumbnail || 'https://placehold.co/100x150'} width='100%' />
+                <img src={book.thumbnail} width='100%'/>
             </Col>
             <Col className='align-self-center'>
                 <div>{book.title}</div>
@@ -38,12 +36,14 @@ const BookPage = ({book}) => {
             </Col>
           </Row>
           <hr/>
+          <div>
+            {book.contents || '내용없음'}
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary">Understood</Button>
         </Modal.Footer>
       </Modal>
     </>

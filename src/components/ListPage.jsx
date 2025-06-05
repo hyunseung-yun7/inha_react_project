@@ -5,6 +5,7 @@ import { getFirestore, collection, query, orderBy, onSnapshot } from 'firebase/f
 import { Table, Button } from 'react-bootstrap';
 
 const ListPage = () => {
+    const basename = process.env.PUBLIC_URL;
     const db = getFirestore(app);
     const navi = useNavigate();
     const email = sessionStorage.getItem('email');
@@ -16,23 +17,23 @@ const ListPage = () => {
     const getList = () => {
         const q = query(collection(db, 'posts'), orderBy('date', 'desc'));
         setLoading(true);
+        let no = 0;
+        let rows = [];
         onSnapshot(q, snapshot=>{
-            const rows = [];
-            let no = 0;
-            const total = snapshot.size;
-            setLast(Math.ceil(total/5));
-            
+            no = 0;
+            rows = [];
             snapshot.forEach(row=>{
                 no = no + 1;
-                rows.push({id: row.id, no: no, ...row.data()});
+                const start = (page-1) * 5 + 1;
+                const end = (page*5);
+                if(no>=start && no<=end){
+                    rows.push({ no:no, id:row.id, ...row.data()});
+                }
             });
-            
-            // 페이지네이션 적용
-            const start = (page - 1) * 5;
-            const end = start + 5;
-            const pagePosts = rows.slice(start, end);
-            
-            setPosts(pagePosts);
+
+            console.log(rows);
+            setPosts(rows);
+            setLast(Math.ceil(no / 5));
             setLoading(false);
         });
     }
@@ -60,21 +61,21 @@ const ListPage = () => {
         }
     }
     if (loading) {
-        return <div className='text-center my-5'>Loading...</div>;
+        return <div className='text-center my-4'>Loading...</div>;
     }
     return (
         <div>
-            <h1 className="text-center my-5">게시판</h1>
+            <h1 className="text-center my-4">게시판</h1>
             <div className='mb-2'>
                 <Button onClick={onClickWrite} className='px-5'>글쓰기</Button>
             </div>
             <Table striped bordered hover>
                 <thead>
                     <tr>
-                        <td>No.</td>
-                        <td>Title</td>
-                        <td>Writer</td>
-                        <td>Date</td>
+                        <td> No. </td>
+                        <td> Title </td>
+                        <td> Writer </td>
+                        <td> Date </td>
                     </tr>
                 </thead>
                 <tbody>
