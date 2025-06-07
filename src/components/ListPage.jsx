@@ -1,101 +1,124 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { app } from '../firebase';
-import { getFirestore, collection, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { getDatabase, ref, onValue } from 'firebase/database';
 import { Table, Button } from 'react-bootstrap';
 
 const ListPage = () => {
     const basename = process.env.PUBLIC_URL;
-    const db = getFirestore(app);
-    const navi = useNavigate();
-    const email = sessionStorage.getItem('email');
-    const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
     const [last, setLast] = useState(1);
+    const [allPosts, setAllPosts] = useState([]);
+    const [list, setList] = useState([]);
+    const db = getDatabase(app);
+    const email = sessionStorage.getItem('email');
+    const nav = useNavigate();
 
     const getList = () => {
-        const q = query(collection(db, 'posts'), orderBy('date', 'desc'));
         setLoading(true);
-        let no = 0;
-        let rows = [];
-        onSnapshot(q, snapshot=>{
-            no = 0;
-            rows = [];
-            snapshot.forEach(row=>{
-                no = no + 1;
-                const start = (page-1) * 5 + 1;
-                const end = (page*5);
-                if(no>=start && no<=end){
-                    rows.push({ no:no, id:row.id, ...row.data()});
-                }
-            });
-
-            console.log(rows);
-            setPosts(rows);
-            setLast(Math.ceil(no / 5));
+        const unsubscribe = onValue(ref(db, 'posts'), snapshot => {
+            const rows = [];
+            if (snapshot.exists()) {
+                snapshot.forEach(row => {
+                    rows.push({
+                        id: row.key,
+                        ...row.val()
+                    });
+                });
+            }
+            // 날짜순으로 내림차순 정렬
+            rows.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            // 번호 매기기
+            const numberedRows = rows.map((row, index) => ({
+                ...row,
+                no: index + 1
+            }));
+            
+            setAllPosts(numberedRows);
+            setLast(Math.ceil(numberedRows.length / 5));
             setLoading(false);
         });
+        
+        return unsubscribe;
     }
 
-    useEffect(()=>{
-        getList();
-    }, [page]);
-
-    const onClickPrev = () => {
-        if(page > 1) {
-            setPage(page - 1);
-        }
+    // 페이징 처리 함수
+    const updatePagedList = () => {
+        const start = (page - 1) * 5;
+        const end = page * 5;
+        const pagedRows = allPosts.slice(start, end);
+        setList(pagedRows);
     }
 
-    const onClickNext = () => {
-        setPage(page + 1);
-    }
+    useEffect(() => {
+        const unsubscribe = getList();
+        
+        return () => {
+            if (unsubscribe) {
+                unsubscribe();
+            }
+        };
+    }, []);
 
-    function onClickWrite() {
-        if (email) {
-            navi(`/post/write`);
-        } else {
+    useEffect(() => {
+        updatePagedList();
+    }, [page, allPosts]);
+    const onClickWrite = () => {
+        if(email){
+            nav('/post/write');
+        }else{
             sessionStorage.setItem('target', '/post/write');
-            navi('/login');
+            nav('/login');
         }
     }
-    if (loading) {
-        return <div className='text-center my-4'>Loading...</div>;
-    }
+
+    if(loading) return <h1 className='my-5 text-center'>로딩중......</h1>
     return (
         <div>
-            <h1 className="text-center my-4">게시판</h1>
-            <div className='mb-2'>
-                <Button onClick={onClickWrite} className='px-5'>글쓰기</Button>
+            <h1 className='my-5 text-center'>게시글</h1>
+            <div className='my-3'>
+                <Button className='px-5' variant='outline-primary' size='sm'
+                    onClick={onClickWrite}>글쓰기</Button>
             </div>
             <Table striped bordered hover>
                 <thead>
-                    <tr>
-                        <td> No. </td>
-                        <td> Title </td>
-                        <td> Writer </td>
-                        <td> Date </td>
+                    <tr className='text-center'>
+                        <td width='30'>No.</td>
+                        <td width='50%'>Title</td>
+                        <td>Writer</td>
+                        <td>Date</td>
                     </tr>
                 </thead>
                 <tbody>
-                    {posts.map(post=>
-                        <tr key={post.no}>
-                            <td>{post.no}</td>
-                            <td>{post.title}</td>
-                            <td>{post.email}</td>
-                            <td>{post.date}</td>
+                    {list.map(bbs=>
+                        <tr key={bbs.id}>
+                            <td>{bbs.no}</td>
+                            <td>
+                                <div className='ellipsis'>
+                                    <a href={`${basename}/post/read/${bbs.id}?page=${page}`}>{bbs.title}</a>
+                                </div>
+                            </td>
+                            <td>
+                                <div className='ellipsis'>{bbs.email}</div>
+                            </td>
+                            <td>
+                                <div className='ellipsis'>{bbs.date}</div>
+                            </td>
                         </tr>
                     )}
                 </tbody>
-            </ Table>
+            </Table>
             <div className='text-center'>
-                <Button onClick={()=>setPage(page-1)} disabled={page === 1} size='sm' className='px-3'>이전</Button>
-                <span className='mx-3'>{page}/{last || 1}</span>
-                <Button onClick={()=>setPage(page+1)} disabled={page >= last} size='sm' className='px-3'>다음</Button>
+                <Button onClick={()=>setPage(page-1)}
+                    variant='outline-primary' size='sm' disabled={page===1}>이전</Button>
+                <span className='px-2'>{page}/{last}</span>
+                <Button onClick={()=>setPage(page+1)}
+                    variant='outline-primary' size='sm' disabled={page===last}>다음</Button>
             </div>
         </div>
-    );
+    )
 }
 
-export default ListPage;
+export default ListPage

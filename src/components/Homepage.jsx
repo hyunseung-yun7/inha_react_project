@@ -1,5 +1,5 @@
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Row, Col, Card, Form, InputGroup, Button } from 'react-bootstrap'
 import BookPage from './BookPage';
 import { BsCart2 } from 'react-icons/bs';
@@ -20,9 +20,18 @@ const Homepage = () => {
   const [query, setQuery] = useState("리액트");
   const [page, setPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const apiCallRef = useRef(false);
 
   const callAPI = async () => {
     try {
+      console.log('callAPI 호출됨 - page:', page, 'query:', query);
+      if (loading || apiCallRef.current) {
+        console.log('이미 로딩 중이므로 API 호출 중단');
+        return;
+      }
+      
+      apiCallRef.current = true;
       setLoading(true);
       const url = "https://dapi.kakao.com/v3/search/book?target=title"
       const config = {
@@ -37,6 +46,7 @@ const Homepage = () => {
       }
 
       const res = await axios.get(url, config)
+      console.log('API 응답 받음:', res.data.documents.length, '개 결과');
       setDocuments(res.data.documents);
       setLastPage(Math.ceil(res.data.meta.pageable_count / 12));
     } catch (error) {
@@ -44,14 +54,16 @@ const Homepage = () => {
       alert('도서 검색 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);
+      apiCallRef.current = false;
     }
   }
 
   useEffect(() => {
+    console.log('useEffect 실행됨 - page:', page, 'query:', query);
     const titleElement = document.getElementsByTagName('title')[0];
     titleElement.innerText = "홈페이지";
     callAPI();
-  }, [page]);
+  }, [page, query]);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -59,7 +71,6 @@ const Homepage = () => {
       alert("검색어를 입력하세요");
     } else {
       setPage(1);
-      callAPI();
     }
   }
 
@@ -100,21 +111,35 @@ const Homepage = () => {
 
   // 현재 이메일의 좋아요 목록함수
   const checkHeart = () => {
-    setLoading(true);
-    onValue(ref(db, `heart/${uid}`), snapshot => {
+    if (!uid) {
+      setHeart([]);
+      return;
+    }
+    
+    const unsubscribe = onValue(ref(db, `heart/${uid}`), snapshot => {
       const rows = [];
-      snapshot.forEach(row => {
-        rows.push(row.val().isbn);
-      });
+      if (snapshot.exists()) {
+        snapshot.forEach(row => {
+          rows.push(row.val().isbn);
+        });
+      }
       console.log(rows);
       setHeart(rows);
-      setLoading(false);
     });
+    
+    return unsubscribe;
   }
 
   useEffect(() => {
-        checkHeart();
-    }, [])
+    console.log('checkHeart useEffect 실행됨 - uid:', uid);
+    const unsubscribe = checkHeart();
+    return () => {
+      console.log('checkHeart cleanup 실행됨');
+      if (typeof unsubscribe === 'function') {
+        unsubscribe();
+      }
+    };
+  }, [uid])
 
   if (loading) {
     return <h1 className='text-center my-5'>로딩중...</h1>

@@ -10,10 +10,9 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const basename = process.env.PUBLIC_URL;
   const [form, setForm] = useState({
-    email: 'blue@inha.com',
-    pass: '12341234'
+    email: 'test@test.com',
+    pass: '123456'
   });
   const { email, pass } = form;
   const onChange = (e) => {
@@ -48,7 +47,8 @@ const LoginPage = () => {
           }
         })
         .catch(error => {
-          alert('로그인 실패');
+          console.log('로그인 에러:', error);
+          alert('로그인 실패: ' + error.message);
           setLoading(false);
         });
     }

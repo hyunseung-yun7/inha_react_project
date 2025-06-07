@@ -1,8 +1,7 @@
 import './App.css';
-import { Routes, Route } from 'react-router-dom';
 import Menubar from './components/Menubar';
 import FooterPage from './components/FooterPage';
-import PostRouter from './components/PostRouter';
+import MainRouter from './components/MainRouter';
 
 function App() {
   const basename = process.env.PUBLIC_URL;
@@ -10,9 +9,7 @@ function App() {
       <div>
         <img src={`${basename}/home.jpg`} width='100%'/>
         <Menubar/>
-        <Routes>
-          <Route path="/post/*" element={<PostRouter />} />
-        </Routes>
+        <MainRouter/>
         <FooterPage/>
       </div>
   );

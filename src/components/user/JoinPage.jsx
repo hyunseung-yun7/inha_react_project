@@ -10,8 +10,8 @@ const JoinPage = () => {
     const navigate = useNavigate();
 
     const [form, setForm] = useState({
-        email: 'green@inha.com',
-        pass: '12341234',
+        email: 'test@test.com',
+        pass: '123456',
     });
     const { email, pass } = form;
     const onChange = (e) => {
@@ -31,12 +31,14 @@ const JoinPage = () => {
                 setLoading(true);
                 createUserWithEmailAndPassword(auth, email, pass)
                 .then(success => {
+                    console.log('회원가입 성공:', success);
                     alert('회원가입 성공');
                     navigate('/login');
                 })
-                .cath(error =>{
+                .catch(error =>{
+                    console.log('회원가입 에러:', error);
                     setLoading(false);
-                    alert('회원가입 실패' + error.mesage);
+                    alert('회원가입 실패: ' + error.message);
                 })
             }
         }

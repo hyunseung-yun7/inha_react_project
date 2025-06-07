@@ -1,13 +1,13 @@
 import React, {useState} from 'react'
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import { app } from '../firebase';
-import { getFirestore, addDoc, collection } from 'firebase/firestore';
+import { getDatabase, ref, push, set } from 'firebase/database';
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
 
 
 const WritePage = () => {
-    const db = getFirestore(app);
+    const db = getDatabase(app);
     const navi = useNavigate();
     const [form, setForm] = React.useState({
         email: sessionStorage.getItem('email'),
@@ -29,7 +29,8 @@ const WritePage = () => {
         }else {
             //게시글 등록
             const date = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
-            addDoc(collection(db, 'posts'), {...form,date})
+            const postRef = push(ref(db, 'posts'));
+            set(postRef, {...form, date});
             navi('/post')
         }
     }
