@@ -11,8 +11,8 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
-    email: 'test@test.com',
-    pass: '123456'
+    email: 'blue@inha.com',
+    pass: '12341234'
   });
   const { email, pass } = form;
   const onChange = (e) => {
