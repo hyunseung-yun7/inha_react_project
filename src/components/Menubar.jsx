@@ -6,7 +6,6 @@ import { getAuth, signOut } from 'firebase/auth';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import MainRouter from './MainRouter';
 
 const Menubar = () => {
     const [email, setEmail] = useState('');
@@ -62,7 +61,7 @@ const Menubar = () => {
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
-            <MainRouter />
+            
         </>
     );
 };
