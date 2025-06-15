@@ -192,12 +192,10 @@ const Homepage = () => {
         ))}
       </Row>
       <div className='text-center mt-3'>
-        <Button
-          disabled={page === 1}
+        <Button disabled={page === 1}
           onClick={() => setPage(page - 1)}>이전</Button>
-        <span className='mx-2'>{page}</span>
-        <Button
-          disabled={page === lastPage}
+        <span className='mx-2'>{page} / {lastPage}</span>
+        <Button disabled={page === lastPage}
           onClick={() => setPage(page + 1)}>다음</Button>
       </div>
     </div>

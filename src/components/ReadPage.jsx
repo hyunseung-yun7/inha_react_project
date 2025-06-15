@@ -45,7 +45,8 @@ const ReadPage = () => {
     
     if(loading) return <h1 className='text-center my-5'> 로딩중 ... </h1>
     return (
-        <div className='mt-4'>
+        <div>
+            <h1 className='my-5 text-center'>게시글정보</h1>
             {login === email && 
                 <Row className='justify-content-center mb-3'>
                     <Col md={10} className='text-end'>
